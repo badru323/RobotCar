@@ -1,0 +1,25 @@
+<annotation>
+	<folder>my-project-name</folder>
+	<filename>team01_029.jpg</filename>
+	<path>/my-project-name/team01_029.jpg</path>
+	<source>
+		<database>Unspecified</database>
+	</source>
+	<size>
+		<width>5712</width>
+		<height>4284</height>
+		<depth>3</depth>
+	</size>
+	<object>
+		<name>	Stop Sign</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>3145</xmin>
+			<ymin>500</ymin>
+			<xmax>3789</xmax>
+			<ymax>1144</ymax>
+		</bndbox>
+	</object>
+</annotation>

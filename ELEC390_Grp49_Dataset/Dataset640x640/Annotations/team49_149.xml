@@ -1,0 +1,29 @@
+<annotation>
+	<folder></folder>
+	<filename>team49_050_jpg.rf.3e66c3ed21cf699709c9fa31392be8ac.jpg</filename>
+	<path>team49_050_jpg.rf.3e66c3ed21cf699709c9fa31392be8ac.jpg</path>
+	<source>
+		<database>roboflow.com</database>
+	</source>
+	<size>
+		<width>640</width>
+		<height>640</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>sign_noentry</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>225</xmin>
+			<xmax>368</xmax>
+			<ymin>163</ymin>
+			<ymax>349</ymax>
+		</bndbox>
+	</object>
+	<metadata>
+	</metadata>
+</annotation>

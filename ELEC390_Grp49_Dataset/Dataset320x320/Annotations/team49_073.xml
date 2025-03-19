@@ -1,0 +1,29 @@
+<annotation>
+	<folder></folder>
+	<filename>team49_025_jpg.rf.1aa88c95fe0764b612b3778e6aa32afb.jpg</filename>
+	<path>team49_025_jpg.rf.1aa88c95fe0764b612b3778e6aa32afb.jpg</path>
+	<source>
+		<database>roboflow.com</database>
+	</source>
+	<size>
+		<width>320</width>
+		<height>320</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>sign_oneway_left</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>112</xmin>
+			<xmax>266</xmax>
+			<ymin>66</ymin>
+			<ymax>139</ymax>
+		</bndbox>
+	</object>
+	<metadata>
+	</metadata>
+</annotation>

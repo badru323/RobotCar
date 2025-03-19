@@ -1,0 +1,29 @@
+<annotation>
+	<folder></folder>
+	<filename>team49_009_jpg.rf.52384a7fa51b196f77849740e3723b5d.jpg</filename>
+	<path>team49_009_jpg.rf.52384a7fa51b196f77849740e3723b5d.jpg</path>
+	<source>
+		<database>roboflow.com</database>
+	</source>
+	<size>
+		<width>640</width>
+		<height>640</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>sign_stop</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>315</xmin>
+			<xmax>582</xmax>
+			<ymin>113</ymin>
+			<ymax>310</ymax>
+		</bndbox>
+	</object>
+	<metadata>
+	</metadata>
+</annotation>

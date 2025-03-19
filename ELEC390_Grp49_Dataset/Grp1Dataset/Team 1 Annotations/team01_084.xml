@@ -1,0 +1,25 @@
+<annotation>
+	<folder>my-project-name</folder>
+	<filename>team01_084.jpg</filename>
+	<path>/my-project-name/team01_084.jpg</path>
+	<source>
+		<database>Unspecified</database>
+	</source>
+	<size>
+		<width>5712</width>
+		<height>4284</height>
+		<depth>3</depth>
+	</size>
+	<object>
+		<name>Yield Sign</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>3605</xmin>
+			<ymin>1547</ymin>
+			<xmax>4377</xmax>
+			<ymax>2199</ymax>
+		</bndbox>
+	</object>
+</annotation>

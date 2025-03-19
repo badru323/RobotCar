@@ -1,0 +1,29 @@
+<annotation>
+	<folder></folder>
+	<filename>team49_016_jpg.rf.b9c2893703e3c9000f7080f6afbb8513.jpg</filename>
+	<path>team49_016_jpg.rf.b9c2893703e3c9000f7080f6afbb8513.jpg</path>
+	<source>
+		<database>roboflow.com</database>
+	</source>
+	<size>
+		<width>320</width>
+		<height>320</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>sign_yield</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>39</xmin>
+			<xmax>214</xmax>
+			<ymin>56</ymin>
+			<ymax>173</ymax>
+		</bndbox>
+	</object>
+	<metadata>
+	</metadata>
+</annotation>
