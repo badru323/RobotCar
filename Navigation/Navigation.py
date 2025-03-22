@@ -54,7 +54,7 @@ def navigation_loop():
                 continue
 
             lane_offset = get_lane_center(frame)
-            goal = (lane_offset, 100
+            goal = lane_offset, 100
 
             # Read the ultrasonic sensor (from ObjectAvoidance.py logic)
             distance = round(car.ultrasonic.read(), 2)

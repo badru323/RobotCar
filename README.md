@@ -1,3 +1,4 @@
 # RobotCar
 ELEC 390 Design Project
-test test 
+
+More info coming soon 
