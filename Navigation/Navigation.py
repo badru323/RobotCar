@@ -3,46 +3,37 @@ import cv2
 import numpy as np
 
 from picarx import Picarx
-import laneDetection
+import lane_processing  as laneDetection  # use new lane_processing module
 import APFAlgorithm
 from vpfs_client import VPFSClient
-import Map_Navigation
+import Map_Navigation as map_navigation  # alias for consistency
 
 SERVER_IP = "127.0.0.1"
 TEAM_NUM = 49
 AUTH_KEY = "49"
 
-NAV_EPSILON = 0.10  # how close (in m) we must get to a waypoint
+NAV_EPSILON = 0.10  # waypoint threshold in meters
 
-def get_lane_offset(frame):
-    gray = laneDetection.grey_scale(frame)
-    blurred = laneDetection.guass_blur(gray)
-    edges = laneDetection.canny_edge_det(blurred, 50, 150)
-    
-    # ROI mask
-    h, w = edges.shape
-    mask = np.zeros_like(edges)
-    polygon = np.array([[
-        (0, h),
-        (w*0.45, h*0.5),
-        (w*0.55, h*0.5),
-        (w, h)
-    ]], dtype=np.int32)
-    cv2.fillPoly(mask, polygon, 255)
-    masked_edges = cv2.bitwise_and(edges, mask)
+# Conversion: ROI width = 300 pixels, center at 150.
+# Adjust the conversion factor as needed.
+PIXEL_TO_METER = 0.01
 
-    histogram = np.sum(masked_edges[int(h/2):, :], axis=0)
-    if np.sum(histogram) > 0:
-        peak_x = np.argmax(histogram)
-        offset = peak_x - (w // 2)
+def compute_lane_offset(frame):
+    midpoints = laneDetection.getLanes(frame)
+    if midpoints:
+        # Compute average x-coordinate of the detected midpoints
+        avg_midpoint = sum(midpoints) / len(midpoints)
+        # Calculate offset relative to the ROI center (which is 150 pixels)
+        offset_px = avg_midpoint - 150
+        offset_m = offset_px * PIXEL_TO_METER
+        return offset_m
     else:
-        offset = 0
-    return offset
+        # If no lanes detected, assume no lateral offset
+        return 0.0
 
 def compute_servo_angle(apf_angle_degrees):
     servo_angle = 90 - apf_angle_degrees
-    servo_angle = max(min(servo_angle, 90), -90)
-    return servo_angle
+    return max(min(servo_angle, 90), -90)
 
 def navigation_loop():
     car = Picarx()
@@ -57,7 +48,7 @@ def navigation_loop():
     pickup_done = False
     dropoff_done = False
 
-    # store a route of intersections and our current index.
+    # Store the current route (waypoints) and index.
     waypoints = []
     waypoint_index = 0
 
@@ -73,7 +64,7 @@ def navigation_loop():
                 print("Match ended. Stopping navigation.")
                 break
 
-            # Check current fare
+            # Retrieve current fare status.
             fare_status = vpfs.get_current_fare()
             if fare_status:
                 fare_info = fare_status.get("fare", None)
@@ -88,14 +79,14 @@ def navigation_loop():
             else:
                 active_fare = None
 
-            # If the dropoff is done, release the fare
+            # If dropoff is complete, clear the fare for a new one.
             if dropoff_done and active_fare:
-                print("Fare is completed. Clearing active fare so we can claim another.")
+                print("Fare completed. Clearing active fare for a new claim.")
                 active_fare = None
                 waypoints = []
                 waypoint_index = 0
 
-            # If no active fare, claim one
+            # If no active fare, attempt to claim one.
             if not active_fare:
                 print("No active fare, searching for fares...")
                 fares = vpfs.get_fares()
@@ -115,7 +106,7 @@ def navigation_loop():
                     time.sleep(2)
                     continue
 
-            # If we do have a fare, decide if we go to pickup or dropoff
+            # Set target based on fare status.
             if active_fare and not pickup_done:
                 target_x = active_fare["src"]["x"]
                 target_y = active_fare["src"]["y"]
@@ -125,12 +116,11 @@ def navigation_loop():
                 target_y = active_fare["dest"]["y"]
                 print(f"Navigating to dropoff at ({target_x:.2f}, {target_y:.2f})")
             else:
-                # If still no fare, skip the rest
                 car.forward(0)
                 time.sleep(1)
                 continue
 
-            # Get current position
+            # Get current GPS position.
             pos_data = vpfs.get_position()
             if not pos_data or "position" not in pos_data:
                 print("No GPS position. Stopping briefly.")
@@ -140,9 +130,9 @@ def navigation_loop():
             curr_x = pos_data["position"]["x"]
             curr_y = pos_data["position"]["y"]
 
-            # If we have no route or we've reached the end, plan a new route
+            # Plan or update route if necessary.
             if not waypoints or waypoint_index >= len(waypoints):
-                waypoints = Map_Navigation.plan_route(curr_x, curr_y, target_x, target_y)
+                waypoints = map_navigation.plan_route(curr_x, curr_y, target_x, target_y)
                 waypoint_index = 0
                 if not waypoints:
                     print("No route found. Stopping briefly.")
@@ -150,27 +140,27 @@ def navigation_loop():
                     time.sleep(2)
                     continue
 
-            # Check if we've reached the final waypoint
+            # Check if final waypoint is reached.
             final_waypoint = waypoints[-1]
-            final_dist = Map_Navigation.euclidean_dist(final_waypoint, (curr_x, curr_y))
+            final_dist = map_navigation.euclidean_dist(final_waypoint, (curr_x, curr_y))
             if final_dist < NAV_EPSILON:
                 print("Reached final target. Stopping to register pickup/dropoff.")
                 car.forward(0)
                 time.sleep(2)
                 continue
 
-            # Otherwise, aim for the current waypoint
+            # Aim for the current waypoint.
             wx, wy = waypoints[waypoint_index]
-            dist_to_wp = Map_Navigation.euclidean_dist((wx, wy), (curr_x, curr_y))
+            dist_to_wp = map_navigation.euclidean_dist((wx, wy), (curr_x, curr_y))
             if dist_to_wp < NAV_EPSILON:
                 print(f"Reached waypoint {waypoint_index}.")
                 waypoint_index += 1
                 continue
 
-            # Compute heading from current pos to this waypoint
-            heading_deg_map = Map_Navigation.direct_heading(curr_x, curr_y, wx, wy)
+            # Compute global heading from current position to this waypoint.
+            heading_deg_map = map_navigation.direct_heading(curr_x, curr_y, wx, wy)
 
-            # Lane offset from camera
+            # Get lane offset using the new lane_processing module.
             ret, frame = cap.read()
             if not ret:
                 print("Camera read failed.")
@@ -178,17 +168,17 @@ def navigation_loop():
                 time.sleep(1)
                 continue
 
-            lane_offset_px = get_lane_offset(frame)
-            lane_offset_m = lane_offset_px * 0.01
+            # Compute lane offset (in meters) from detected lane midpoints.
+            lane_offset_m = compute_lane_offset(frame)
 
-            # Ultrasonic
+            # Ultrasonic sensor reading.
             distance_ultra = round(car.ultrasonic.read(), 2)
             if distance_ultra < 30:
                 obstacle_dist = distance_ultra / 100.0
             else:
                 obstacle_dist = 999.0
 
-            # APF steering
+            # Compute the local steering angle using the APF algorithm.
             steer_deg = APFAlgorithm.computeSteering(heading_deg_map, lane_offset_m, obstacle_dist)
             servo_angle = compute_servo_angle(steer_deg)
             car.set_dir_servo_angle(servo_angle)
