@@ -1,19 +1,20 @@
-from picarx import Picarx
+import multiprocessing
 import time
+from picarx import Picarx
 
 POWER = 50
 SafeDistance = 40   # > 40 safe
-DangerDistance = 20 # > 20 && < 40 turn around,
-                    # < 20 backward
+DangerDistance = 20 # > 20 && < 40 turn around, < 20 backward
 
-def main():
+def object_avoidance():
+    """Object avoidance process using PiCar's ultrasonic sensor."""
+    px = Picarx()  # Initialize PiCar-X in this process
+
     try:
-        px = Picarx()
-        # px = Picarx(ultrasonic_pins=['D2','D3']) # tring, echo
-
         while True:
             distance = round(px.ultrasonic.read(), 2)
-            print("distance: ",distance)
+            print("Distance:", distance)
+
             if distance >= SafeDistance:
                 px.set_dir_servo_angle(0)
                 px.forward(POWER)
@@ -27,8 +28,11 @@ def main():
                 time.sleep(0.5)
 
     finally:
-        px.forward(0)
+        px.forward(0)  # Stop car when process exits
+
+def start_ultrasonic_object_avoidance():
+    obj_avoidance_process = multiprocessing.Process(target=object_avoidance)
+    obj_avoidance_process.start()
+    return obj_avoidance_process # activates in main node
 
 
-if __name__ == "__main__":
-    main()

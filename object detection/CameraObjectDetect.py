@@ -32,27 +32,6 @@ for frame in vision.get_frames():
     objects = detector.get_objects(frame, threshold=0.4)
     vision.draw_objects(frame, objects, labels)
 
-def getObjects_in_frame(frame):
-    objects = detector.get_objects(frame, threshold = 0.4)
-    return objects
-
-def getObj_in_Objs(objs, label_name):
-    for obj in objs:
-        if labels.get(obj.id) == label_name:
-            return obj
-        return None
-
-def getLabels_in_frame(objects):
-    for obj in objects:
-        labels_list = [labels.get(obj.id)]
-    return labels_list
-
-def getObjPixelHeight(object):
-    bbox = object.bbox
-    return bbox.ymax - bbox.ymin
-
-def getObjPixelWidth(object):
-    return object.bbox.xmax - object.bbox.xmin
 
 
 

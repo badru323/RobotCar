@@ -19,4 +19,5 @@ def capture_camera_feed():
 def start_camera_thread():
     thread = threading.Thread(capture=capture_camera_feed, daemon=True)
     thread.start()
-    
+
+

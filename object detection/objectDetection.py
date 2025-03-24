@@ -4,7 +4,7 @@ from aiymakerkit import utils
 from pycoral.utils.dataset import read_label_file
 import cv2
 from picarx import Picarx
-import CarStates as sm
+import multiprocessing
 
 focal_length = 593.1712
 
@@ -23,6 +23,7 @@ def getPhysicalHeight(label):
         return 15.00
     elif label == "road_oneway":
         return 75.00 # width length of the one way signs
+    
 def getPhysicalWidth(label):
     if label == "sign_stop":
         return 50.00
@@ -40,25 +41,39 @@ def getPhysicalWidth(label):
         return 25.00 # height length of the one way signs
 
 def getDistance_H(label, obj):
-    dist = getPhysicalHeight(label)*focal_length/ObjDet.getObjPixelHeight(obj)
+    dist = getPhysicalHeight(label)*focal_length/getObjPixelHeight(obj)
     return dist
 
 def getDistace_W(label, obj):
-    return getPhysicalHeight(label)*focal_length/ObjDet.getObjPixelWidth(obj)
+    return getPhysicalHeight(label)*focal_length/getObjPixelWidth(obj)
 
-def detectStop():
-    current_state = 'stop' #px.stop()
-    # getDistance_H("sign_stop", ObjDet.getObj_in_Objs(objs, "sign_stop"))
+def getObjPixelHeight(object):
+    bbox = object.bbox
+    return bbox.ymax - bbox.ymin
 
-def detectYield(): 
+def getObjPixelWidth(object):
+    return object.bbox.xmax - object.bbox.xmin
+
+def obj_detect_process(obj_queue):
+    for frame in vision.get_frames(): 
+        objects = ObjDet.detector.get_objects(frame, threshold=0.4)
+        detected_data = []
+
+        for obj in objects:
+            label = ObjDet.labels.get(obj.id)
+            if label:
+                dist = getDistance_H(label, obj)
+                detected_data.append((label, dist)) 
+        
+        # send detected objects and their distances
+        obj_queue.put(detected_data)
+
+def start_object_detection(object_queue):
+    """ Launch object detection as a separate process. """
+    process = multiprocessing.Process(target=obj_detect_process, args=(object_queue,))
+    process.start()
+    return process # activates in main node
+
     
-    
-def obj_detect():
-    while True: 
-        for frame in vision.get_frames(): 
-            objects = ObjDet.getObjects_in_frame(frame)
-            labels_list = ObjDet.getLabels_in_frame(objects)
-            for label in labels_list: 
-                
-                
+
 
