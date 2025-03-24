@@ -10,43 +10,26 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(GPIO17, GPIO.OUT)
 GPIO.setup(GPIO4, GPIO.OUT)
 
-
-# Cycles through i) just red (GPIO 17), ii) just yellow (GPIO 4), iii) both on, iv) both off
-
-
 def turn_on_gpio(pin):
     """Turns on the specified GPIO pin."""
     GPIO.output(pin, GPIO.HIGH)
     print(f"GPIO {pin} is ON")
+
+def turn_on_gpios(pin1, pin2):
+    GPIO.output(pin1, GPIO.HIGH)
+    GPIO.output(pin2, GPIO.HIGH)
 
 def turn_off_gpio(pin):
     """Turns off the specified GPIO pin."""
     GPIO.output(pin, GPIO.LOW)
     print(f"GPIO {pin} is OFF")
 
-try:
-    while True:
-        print("\nTurning on GPIO 17 only...")
-        turn_on_gpio(GPIO17)
-        turn_off_gpio(GPIO4)
-        time.sleep(2)  # Wait 2 seconds
+def turn_off_gpios(pin1, pin2):
+    GPIO.output(pin1, GPIO.LOW)
+    GPIO.output(pin2, GPIO.LOW)
+    reset_leds()
 
-        print("\nTurning on GPIO 4 only...")
-        turn_off_gpio(GPIO17)
-        turn_on_gpio(GPIO4)
-        time.sleep(2)  # Wait 2 seconds
+def reset_leds():
+    GPIO.cleanup()
 
-        print("\nTurning on both GPIO 17 and GPIO 4...")
-        turn_on_gpio(GPIO17)
-        turn_on_gpio(GPIO4)
-        time.sleep(2)  # Wait 2 seconds
-
-        print("\nTurning off both GPIO 17 and GPIO 4...")
-        turn_off_gpio(GPIO17)
-        turn_off_gpio(GPIO4)
-        time.sleep(2)  # Wait 2 seconds
-
-except KeyboardInterrupt:
-    print("\nScript interrupted. Cleaning up...")
-finally:
-    GPIO.cleanup()  # Reset GPIO settings before exiting
+#
