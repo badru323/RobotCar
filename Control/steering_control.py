@@ -35,12 +35,12 @@ def steering_control_for_lanes(lane_queue):
         steering_angle = pid.update(lane_error, dt)
         set_steering(steering_angle)
 
-def steering_control_for_objects(obj_queue):
-    if not obj_queue.empty():
-        object_detected = obj_queue.get()
+# def steering_control_for_objects(obj_queue):
+#     if not obj_queue.empty():
+#         object_detected = obj_queue.get()
 
-        if obj_detected:
-            state_machine(obj) ## Need to implement
+#         if obj_detected:
+#             state_machine(obj) ## Need to implement
 
 
 

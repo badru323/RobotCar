@@ -31,7 +31,7 @@ def draw_objects(draw, objs, scale_factor, labels):
               fill=color, font=font)
 
 # Load the TF Lite model
-TFLITE_FILENAME = 'efficientdet-lite-ELEC390-road-signs.tflite'
+TFLITE_FILENAME = 'efficientdet-lite-ELEC390-traffic-signs.tflite'
 LABELS_FILENAME = '/content/ELEC390labels.txt'
 labels = read_label_file(LABELS_FILENAME)
 interpreter = tflite.Interpreter(TFLITE_FILENAME)

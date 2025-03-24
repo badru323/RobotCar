@@ -24,8 +24,8 @@ dataset_is_split = False
 label_map = {1: 'duck_regular', 2: 'duck_specialty', 3: 'sign_stop', 4: 'sign_oneway_right', 5: 'sign_oneway_left', 6: 'sign_noentry', 7: 'sign_yield', 8: 'road_crosswalk', 9: 'road_oneway', 10: 'vehicle'}
 
 # Specify the path to all images and annotations.
-images_in = '/content/ELEC390Dataset/Dataset/Images'
-annotations_in = '/content/ELEC390Dataset/Dataset/Annotations'
+images_in = '/content/ELEC390Dataset2/Dataset/Images'
+annotations_in = '/content/ELEC390Dataset2/Dataset/Annotations'
 
 # Unlike the salads dataset which defined which data was part of the test 
 # and validation sets, the road signs dataset doesn't do this.  Thus, we use 
@@ -116,7 +116,7 @@ print(results)
 # directory and format. By default, it exports to TF Lite, but we also want a 
 # labels file, so we declare both:
 
-TFLITE_FILENAME = 'efficientdet-lite-ELEC390-road-signs.tflite'
+TFLITE_FILENAME = 'efficientdet-lite-ELEC390-traffic-signs.tflite'
 LABELS_FILENAME = 'ELEC390labels.txt'
 
 model.export(export_dir='.', tflite_filename=TFLITE_FILENAME, label_filename=LABELS_FILENAME,
