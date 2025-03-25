@@ -54,15 +54,17 @@ if __name__ == "__main__":
                     speed = max(0, speed - 10)    # Decrease speed, not negative
                 elif key == 'd':
                     # Right turn: blink right LED briefly, then update angle
-                    fullSystem.turn_on_gpio(fullSystem.GPIO4)
-                    sleep(0.3)
-                    fullSystem.turn_off_gpio(fullSystem.GPIO4)
-                    angle = min(40, angle + 10)
-                elif key == 'a':
-                    # Left turn: blink left LED briefly, then update angle
+                    fullSystem.no_light()
                     fullSystem.turn_on_gpio(fullSystem.GPIO17)
                     sleep(0.3)
                     fullSystem.turn_off_gpio(fullSystem.GPIO17)
+                    angle = min(40, angle + 10)
+                elif key == 'a':
+                    # Left turn: blink left LED briefly, then update angle
+                    fullSystem.no_light()
+                    fullSystem.turn_on_gpio(fullSystem.GPIO4)
+                    sleep(0.3)
+                    fullSystem.turn_off_gpio(fullSystem.GPIO4)
                     angle = max(-40, angle - 10)
                 
                 px.set_dir_servo_angle(angle)
