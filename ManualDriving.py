@@ -1,6 +1,7 @@
 from picarx import Picarx
 from time import sleep
 import readchar
+import fullSystem
 
 def get_manual(speed, angle):
     return f'''
@@ -34,8 +35,10 @@ if __name__ == "__main__":
             
             if key in ('wsadxik'):
                 if 'w' == key:
+                    fullSystem.no_light()
                     px.forward(speed)
                 elif 's' == key:   
+                    fullSystem.brake_light()
                     px.forward(0)
                 elif 'x' == key:
                     px.forward(-speed)
@@ -44,9 +47,11 @@ if __name__ == "__main__":
                 elif 'k' == key:
                     speed = max(0, speed - 10)  # prevent negative speed
                 elif 'd' == key:
+                    fullSystem.right_blinker()
                     angle = min(40, angle + 10)  # limit right turn
                 elif 'a' == key:
-                    angle = max(-40, angle - 10)  # limit left turn
+                    fullSystem.left_blinker()
+                    angle = max(-40, angle - 10)  # limit left turn    
                 
                 px.set_dir_servo_angle(angle)
                 show_info(speed, angle)

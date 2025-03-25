@@ -24,29 +24,51 @@ def turn_off_gpio(pin):
     GPIO.output(pin, GPIO.LOW)
     print(f"GPIO {pin} is OFF")
 
-try:
+def brake_light():
+    turn_on_gpio(GPIO17)
+    turn_on_gpio(GPIO4)
+
+def no_light():
+    turn_off_gpio(GPIO17)
+    turn_on_gpio(GPIO4)
+
+def right_blinker():
     while True:
-        print("\nTurning on GPIO 17 only...")
-        turn_on_gpio(GPIO17)
-        turn_off_gpio(GPIO4)
-        time.sleep(2)  # Wait 2 seconds
-
-        print("\nTurning on GPIO 4 only...")
-        turn_off_gpio(GPIO17)
         turn_on_gpio(GPIO4)
-        time.sleep(2)  # Wait 2 seconds
-
-        print("\nTurning on both GPIO 17 and GPIO 4...")
-        turn_on_gpio(GPIO17)
-        turn_on_gpio(GPIO4)
-        time.sleep(2)  # Wait 2 seconds
-
-        print("\nTurning off both GPIO 17 and GPIO 4...")
-        turn_off_gpio(GPIO17)
+        time.sleep(0.5)
         turn_off_gpio(GPIO4)
-        time.sleep(2)  # Wait 2 seconds
+        time.sleep(0.5)
 
-except KeyboardInterrupt:
-    print("\nScript interrupted. Cleaning up...")
-finally:
-    GPIO.cleanup()  # Reset GPIO settings before exiting
+def left_blinker():
+    while True:
+        turn_on_gpio(GPIO17)
+        time.sleep(0.5)
+        turn_off_gpio(GPIO17)
+        time.sleep(0.5)
+
+# try:
+#     while True:
+#         print("\nTurning on GPIO 17 only...")
+#         turn_on_gpio(GPIO17)
+#         turn_off_gpio(GPIO4)
+#         time.sleep(2)  # Wait 2 seconds
+
+#         print("\nTurning on GPIO 4 only...")
+#         turn_off_gpio(GPIO17)
+#         turn_on_gpio(GPIO4)
+#         time.sleep(2)  # Wait 2 seconds
+
+#         print("\nTurning on both GPIO 17 and GPIO 4...")
+#         turn_on_gpio(GPIO17)
+#         turn_on_gpio(GPIO4)
+#         time.sleep(2)  # Wait 2 seconds
+
+#         print("\nTurning off both GPIO 17 and GPIO 4...")
+#         turn_off_gpio(GPIO17)
+#         turn_off_gpio(GPIO4)
+#         time.sleep(2)  # Wait 2 seconds
+
+# except KeyboardInterrupt:
+#     print("\nScript interrupted. Cleaning up...")
+# finally:
+#     GPIO.cleanup()  # Reset GPIO settings before exiting
