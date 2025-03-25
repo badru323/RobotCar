@@ -3,24 +3,24 @@ from time import sleep
 import readchar
 import fullSystem
 
-def get_manual(speed, angle):
-    return f'''
-Press keys on keyboard to control PiCar-X!
-    w: Forward
-    a: Turn left
-    s: Stop
-    x: Backward
-    d: Turn right
-    i: Accelerate
-    k: Decelerate
-    Current speed: {speed}
-    Current angle: {angle}
-    ctrl+c: Press twice to exit the program
-'''
+# def get_manual(speed, angle):
+#     return f'''
+#     Press keys on keyboard to control PiCar-X!
+#     w: Forward
+#     a: Turn left
+#     s: Stop
+#     x: Backward
+#     d: Turn right
+#     i: Accelerate
+#     k: Decelerate
+#     Current speed: {speed}
+#     Current angle: {angle}
+#     ctrl+c: Press twice to exit the program
+# '''
 
 def show_info(speed, angle):
     print("\033[H\033[J", end='')  # clear terminal windows
-    print(get_manual(speed, angle))
+    # print(get_manual(speed, angle))
 
 if __name__ == "__main__":
     try:
