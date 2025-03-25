@@ -1,11 +1,29 @@
 from picarx import Picarx
 from time import sleep
 import readchar
-import fullSystem
+import RPi.GPIO as GPIO
+
+# Brake light GPIO pins
+GPIO17 = 17
+GPIO4 = 4
+
+# Setup GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(GPIO17, GPIO.OUT)
+GPIO.setup(GPIO4, GPIO.OUT)
+
+def turn_on_brake_lights():
+    GPIO.output(GPIO17, GPIO.HIGH)
+    GPIO.output(GPIO4, GPIO.HIGH)
+    print("[BRAKE LIGHTS] ON")
+
+def turn_off_brake_lights():
+    GPIO.output(GPIO17, GPIO.LOW)
+    GPIO.output(GPIO4, GPIO.LOW)
+    print("[BRAKE LIGHTS] OFF")
 
 def get_manual(speed, angle):
-    return f'''
-    Press keys on keyboard to control PiCar-X!
+    return f'''\nPress keys on keyboard to control PiCar-X!
     w: Forward
     a: Turn left
     s: Stop
@@ -19,7 +37,7 @@ def get_manual(speed, angle):
 '''
 
 def show_info(speed, angle):
-    print("\033[H\033[J", end='')  # clear terminal windows
+    print("\033[H\033[J", end='')
     print(get_manual(speed, angle))
 
 if __name__ == "__main__":
@@ -27,43 +45,44 @@ if __name__ == "__main__":
         speed = 80
         angle = 0
         px = Picarx()
-        
+
         show_info(speed, angle)
         while True:
-            key = readchar.readkey()
-            key = key.lower()
-            
+            key = readchar.readkey().lower()
+
             if key in ('wsadxik'):
-                if 'w' == key:
-                    fullSystem.no_light()
+                if key == 'w':
+                    turn_off_brake_lights()
                     px.forward(speed)
-                elif 's' == key:   
-                    fullSystem.brake_light()
+                elif key == 's':
+                    turn_on_brake_lights()
                     px.forward(0)
-                elif 'x' == key:
+                elif key == 'x':
+                    turn_off_brake_lights()
                     px.forward(-speed)
-                elif 'i' == key:
-                    speed = min(100, speed + 10)  # limit max speed
-                elif 'k' == key:
-                    speed = max(0, speed - 10)  # prevent negative speed
-                elif 'd' == key:
-                    fullSystem.right_blinker()
-                    angle = min(40, angle + 10)  # limit right turn
-                elif 'a' == key:
-                    fullSystem.left_blinker()
-                    angle = max(-40, angle - 10)  # limit left turn    
-                
-                px.set_dir_servo_angle(angle)
+                elif key == 'a':
+                    turn_on_brake_lights()
+                    px.set_dir_servo_angle(-30)
+                    sleep(0.5)
+                    px.set_dir_servo_angle(0)
+                    turn_off_brake_lights()
+                elif key == 'd':
+                    turn_on_brake_lights()
+                    px.set_dir_servo_angle(30)
+                    sleep(0.5)
+                    px.set_dir_servo_angle(0)
+                    turn_off_brake_lights()
+                elif key == 'i':
+                    speed += 10
+                elif key == 'k':
+                    speed -= 10
+
                 show_info(speed, angle)
-                sleep(0.1)
-          
-            elif key == readchar.key.CTRL_C:
-                print("\nQuit")
-                break
+
+    except KeyboardInterrupt:
+        print("\nExiting...")
 
     finally:
-        px.set_cam_tilt_angle(0)
-        px.set_cam_pan_angle(0)  
-        px.set_dir_servo_angle(0)  
         px.stop()
-        sleep(.2)
+        GPIO.cleanup()
+        print("GPIO cleaned up. Program ended.")
