@@ -27,7 +27,7 @@ if __name__ == "__main__":
         speed = 80
         angle = 0
         px = Picarx()
-
+        
         show_info(speed, angle)
         while True:
             key = readchar.readkey().lower()
@@ -67,12 +67,17 @@ if __name__ == "__main__":
                 
                 px.set_dir_servo_angle(angle)
                 show_info(speed, angle)
-
-    except KeyboardInterrupt:
-        print("\nExiting...")
+                sleep(0.1)
+          
+            elif key == readchar.key.CTRL_C:
+                print("\nQuit")
+                break
 
     except KeyboardInterrupt:
         print("\nInterrupted by user.")
     finally:
+        px.set_cam_tilt_angle(0)
+        px.set_cam_pan_angle(0)  
+        px.set_dir_servo_angle(0)  
         px.stop()
         sleep(0.2)
