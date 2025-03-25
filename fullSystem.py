@@ -30,7 +30,7 @@ def brake_light():
 
 def no_light():
     turn_off_gpio(GPIO17)
-    turn_on_gpio(GPIO4)
+    turn_off_gpio(GPIO4)
 
 def right_blinker():
     while True:
